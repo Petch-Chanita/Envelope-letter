@@ -1,0 +1,352 @@
+/* Custom CSS for Envelope and Animations */
+body {
+  font-family: "Charmonman", cursive; /* Set handwritten font for the entire body */
+  overflow: hidden; /* Prevent scrollbars due to animations */
+  background: radial-gradient(
+    circle at center,
+    #000000 0%,
+    #000000 100%
+  ); /* Background is black as per previous request */
+  display: flex;
+  flex-direction: column; /* Allow stacking elements vertically */
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  position: relative; /* For absolute positioning of hints and button */
+}
+
+.envelope-container {
+  position: relative;
+  width: 320px; /* Base width for envelope */
+  height: 200px; /* Base height for envelope */
+  perspective: 1000px; /* For 3D rotation effects */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out; /* For hover effect */
+  margin-bottom: 20px; /* Space for the button below */
+  z-index: 20; /* Ensure envelope is above background elements when not open */
+}
+
+.envelope-container:hover:not(.open-state) {
+  transform: scale(1.03); /* Slight scale up on hover before opening */
+}
+
+.envelope {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #ffc6d0; /* เปลี่ยนเป็นสีชมพูอ่อนนุ่มนวล */
+  border-radius: 12px; /* ปรับมุมให้โค้งมนขึ้น */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2),
+    inset 0 0 8px rgba(0, 0, 0, 0.05); /* เงาที่นุ่มนวลขึ้นและเงาด้านในเล็กน้อย */
+  transition: transform 0.9s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Bouncier transition */
+  transform-style: preserve-3d;
+}
+
+.envelope.open {
+  transform: translateY(-100px) rotateX(15deg); /* Move up and slight tilt when open */
+}
+
+.envelope-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0; /* ทำให้เป็นรูปสามเหลี่ยม */
+  height: 0; /* ทำให้เป็นรูปสามเหลี่ยม */
+  border-left: 160px solid transparent; /* ครึ่งหนึ่งของความกว้างซอง */
+  border-right: 160px solid transparent; /* ครึ่งหนึ่งของความกว้างซอง */
+  border-top: 100px solid #fcf8f3; /* ความสูงของฝาซอง */
+  transform-origin: 50% 0%; /* หมุนจากกึ่งกลางด้านบนของฐานสามเหลี่ยม */
+  transition: transform 1s cubic-bezier(0.15, -0.55, 0.3, 0.9); /* Bouncier transition */
+  z-index: 2; /* อยู่เหนือตัวซองจดหมายหลัก */
+  pointer-events: none; /* ไม่บล็อกการคลิกที่ตราประทับ */
+  border-top-left-radius: 12px; /* ปรับมุมด้านบนให้โค้งมน */
+  border-top-right-radius: 12px; /* ปรับมุมด้านบนให้โค้งมน */
+}
+
+.envelope.open .envelope-flap {
+  transform: rotateX(180deg); /* เปิดฝาซอง */
+}
+
+.wax-seal {
+  position: absolute;
+  top: 45%; /* Center vertically on the flap */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px; /* Larger seal */
+  height: 80px;
+  background: radial-gradient(
+    circle at 30% 30%,
+    #cd3d3d 0%,
+    #a02c2c 100%
+  ); /* ไล่เฉดสีแดงเข้มให้ดูเหมือนครั่งจริง */
+  border-radius: 50%;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5),
+    0 5px 15px rgba(0, 0, 0, 0.4); /* เงาที่สมจริงขึ้นสำหรับครั่ง */
+  z-index: 3; /* Above the flap */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-size: 3.5rem; /* Larger heart */
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+  border: 1px solid rgba(255, 255, 255, 0.2); /* ขอบสีขาวที่นุ่มนวลขึ้น */
+}
+
+.envelope.open .wax-seal {
+  opacity: 0; /* Hide seal when opened */
+  transform: translate(-50%, -50%) scale(0.3); /* Shrink significantly as it fades */
+}
+
+/* Initial letter papers container inside envelope (hidden state) */
+.letter-papers-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 95%; /* Relative to envelope for initial state */
+  height: 95%;
+  transform: translate(-50%, -50%);
+  overflow: hidden; /* Hide overflowing paper content */
+  opacity: 0;
+  z-index: 1; /* Below the flap initially */
+  pointer-events: none; /* Cannot click papers when inside envelope */
+}
+
+/* The individual letter paper (hidden state inside envelope) */
+.letter-paper-template {
+  /* Renamed from .letter-paper */
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #fffaf0;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  opacity: 0; /* Hidden initially */
+  transform: translateY(150%) scale(0.6); /* Off-screen */
+  transition: transform 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55),
+    opacity 0.7s ease-in-out;
+  box-sizing: border-box;
+  pointer-events: none; /* Not interactive */
+  text-align: center;
+}
+
+/* Full-screen overlay for the active letter paper */
+.letter-paper-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.3
+  ); /* Dim background when paper is shown */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden; /* Hidden by default */
+  transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+  z-index: 50; /* Above envelope, below sparkles */
+}
+
+.letter-paper-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* The actual active letter paper, detached and full-screen */
+.letter-paper-active {
+  background-color:#ece4d4 ; /* Creamy paper color #fffaf0 */
+  border: 1px solid #e0e0e0; /* Softer border */
+  border-radius: 15px; /* More rounded */
+  padding: 40px; /* More generous padding */
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); /* เงาที่ลึกและกระจายตัวมากขึ้น */
+  transform: scale(0.8); /* Start smaller for transition */
+  opacity: 0;
+  transition: transform 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55),
+    opacity 0.7s ease-in-out;
+  cursor: pointer; /* Indicate it's clickable */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: left; /* Adjusted for better readability */
+  font-size: 1.5rem; /* Larger font for readability */
+  line-height: 1.8; /* Better line spacing */
+  box-sizing: border-box; /* Include padding in width/height */
+  color: #333; /* Darker text for readability */
+
+  /* A4 aspect ratio (210mm x 297mm) is approx 1:1.414 */
+  width: min(
+    88vw,
+    700px
+  ); /* Max width 700px, responsive to 88% viewport width */
+  height: calc(min(88vw, 700px) * 1.414); /* Maintain A4 aspect ratio */
+  max-height: 90vh; /* Ensure it doesn't exceed 90% of viewport height */
+}
+
+.letter-paper-overlay.active .letter-paper-active {
+  transform: scale(1); /* Scale up to full size */
+  opacity: 1;
+}
+
+/* Simulate paper creases/folds on active paper */
+.letter-paper-active::before,
+.letter-paper-active::after {
+  content: "";
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.04); /* Lighter shadow for crease */
+  height: 1.5px; /* Thinner crease */
+  z-index: -1;
+  filter: blur(0.8px); /* More blur for softness */
+}
+
+.letter-paper-active::before {
+  top: 33%; /* Adjust crease position */
+  left: 0;
+  width: 100%;
+  transform: rotate(-0.3deg); /* Even more subtle rotation */
+}
+
+.letter-paper-active::after {
+  bottom: 33%; /* Adjust crease position */
+  left: 0;
+  width: 100%;
+  transform: rotate(0.3deg); /* Even more subtle rotation */
+}
+
+/* Frung-fring (sparkle) effect */
+.sparkle-container {
+  position: fixed; /* Fixed to viewport for full screen effect */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Allow clicks to pass through */
+  overflow: hidden;
+  z-index: 60; /* Above letter paper overlay */
+}
+
+.sparkle {
+  position: absolute;
+  background-color: #ffffff; /* Gold color for sparkles */
+  border-radius: 50%;
+  opacity: 0;
+  animation: sparkle-fade 2s forwards; /* Longer animation */
+  box-shadow: 0 0 10px #ffffff, 0 0 20px rgba(255, 255, 255, 0.5); /* Stronger glow effect */
+}
+
+@keyframes sparkle-fade {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.9; /* Peak opacity */
+  }
+  60% {
+    transform: scale(1) rotate(270deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.1) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* New CSS for Galaxy Stars */
+.galaxy-container { /* Renamed from fireworks-container */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 10; /* Below envelope, above background */
+}
+
+.galaxy-star {
+  position: absolute;
+  background-color: #ffffff; /* White star color */
+  border-radius: 50%;
+  opacity: 0;
+  animation: star-twinkle var(--duration) ease-in-out infinite alternate; /* Dynamic duration */
+  box-shadow: 0 0 5px #ffffff, 0 0 10px rgba(255, 255, 255, 0.5); /* Subtle glow */
+}
+
+@keyframes star-twinkle {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+}
+
+.hint-text {
+  position: absolute;
+  bottom: 20px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 8px 15px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+  pointer-events: none;
+  z-index: 70; /* Above sparkles */
+}
+
+.hint-text.hidden {
+  opacity: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .envelope-container {
+    width: 280px;
+    height: 180px;
+  }
+  .envelope-flap {
+    border-left: 140px solid transparent; /* ปรับขนาดตามความกว้างใหม่ */
+    border-right: 140px solid transparent; /* ปรับขนาดตามความกว้างใหม่ */
+    border-top: 90px solid #fcf8f3; /* ปรับขนาดตามความสูงใหม่ */
+  }
+  .wax-seal {
+    width: 70px;
+    height: 70px;
+    font-size: 3rem;
+  }
+  /* The template paper inside the envelope */
+  .letter-paper-template {
+    font-size: 1.1rem;
+    padding: 20px;
+  }
+  /* The actual active, detached paper */
+  .letter-paper-active {
+    width: min(
+      95vw,
+      450px
+    ); /* Adjust for smaller screens to be even wider */
+    height: calc(min(95vw, 450px) * 1.414);
+    max-height: 90vh; /* Adjust max-height for smaller screens */
+  }
+  .hint-text {
+    font-size: 0.8rem;
+    bottom: 15px;
+  }
+}

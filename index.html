@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ส่งจดหมายให้กับคนพิเศษ</title>
+
+    <!-- Favicon: ไอคอนรูปหัวใจสีแดงสำหรับแท็บเบราว์เซอร์ -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='red' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C15.09 3.81 16.76 3 18.5 3 21.58 3 24 5.42 24 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>" type="image/svg+xml">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for handwritten style -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Charmonman:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="bg-pink-100 flex items-center justify-center min-h-screen">
+    <div class="galaxy-container" id="galaxyContainer"></div>
+    <div class="envelope-container" id="envelopeContainer">
+      <div class="envelope" id="envelope">
+        <div class="envelope-flap" id="envelopeFlap"></div>
+        <div class="wax-seal" id="waxSeal">
+          &#10084;
+          <!-- Heart emoji for cute seal -->
+        </div>
+        <!-- Initial letter papers are just templates inside this container -->
+        <div class="letter-papers-container" id="letterPapersContainer"></div>
+      </div>
+    </div>
+
+    <!-- This overlay will hold the active letter paper when it's detached -->
+    <div class="letter-paper-overlay" id="letterPaperOverlay"></div>
+
+    <div class="sparkle-container" id="sparkleContainer"></div>
+    <div class="hint-text" id="hintText">คลิกที่ซองจดหมายเพื่อเปิด</div>
+
+    <!-- Link to external JavaScript file -->
+    <script src="script.js"></script>
+  </body>
+</html>
